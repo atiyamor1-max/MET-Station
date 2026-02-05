@@ -1,0 +1,19 @@
+      .showcase {
+        height: 100vh;
+        background-image: url(/IMG/shwcs.jpg); 
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        display: flex;
+        align-items: center; /* centers text vertically */
+      }
+
+      .showcase-text {
+        background: rgba(0, 0, 0, 0.45); /* readable overlay */
+        padding: 20px 28px;
+        border-radius: 10px;
+        color: white;
+        max-width: 480px;
+      }
+  
