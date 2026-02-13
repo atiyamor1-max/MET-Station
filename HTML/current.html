@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -57,7 +57,7 @@
 
     <!-- SENSOR DISPLAY CARDS -->
     <div class="container mt-5 pt-5">
-      <div class="row">
+      <div class="row" style="padding-bottom: 60px">
         <!-- humidity -->
         <div class="col-md-6">
           <div
@@ -214,13 +214,20 @@
               Buzzer Control
             </label>
 
-            <div class="d-flex justify-content-center gap-2" style="padding-top: 2%">
+            <div
+              class="d-flex justify-content-center gap-2"
+              style="padding-top: 2%"
+            >
               <!-- Each button keeps the same press/hold handlers used before -->
-               <button
+              <button
                 id="ENABLEBTN"
                 type="button"
                 class="btn"
-                style="background-color: #0c141e; color: #e1d9d9; font-family: Verdana, Geneva, Tahoma, sans-serif;"
+                style="
+                  background-color: #0c141e;
+                  color: #e1d9d9;
+                  font-family: Verdana, Geneva, Tahoma, sans-serif;
+                "
                 onmousedown="buzzerOn()"
                 onmouseup="buzzerOff()"
                 onmouseleave="buzzerOff()"
@@ -233,7 +240,11 @@
                 id="buzzerBtn1"
                 type="button"
                 class="btn"
-                style="background-color: #003f8a; color: #e1d9d9; font-family: Verdana, Geneva, Tahoma, sans-serif;"
+                style="
+                  background-color: #003f8a;
+                  color: #e1d9d9;
+                  font-family: Verdana, Geneva, Tahoma, sans-serif;
+                "
                 onmousedown="buzzerOn()"
                 onmouseup="buzzerOff()"
                 onmouseleave="buzzerOff()"
@@ -247,7 +258,11 @@
                 id="buzzerBtn2"
                 type="button"
                 class="btn"
-                style="background-color: #0057b8; color: #e1f0ff; font-family: Verdana, Geneva, Tahoma, sans-serif;"
+                style="
+                  background-color: #0057b8;
+                  color: #e1f0ff;
+                  font-family: Verdana, Geneva, Tahoma, sans-serif;
+                "
                 onmousedown="buzzerOn()"
                 onmouseup="buzzerOff()"
                 onmouseleave="buzzerOff()"
@@ -257,11 +272,15 @@
                 Sound 2
               </button>
 
-               <button
+              <button
                 id="buzzerBtn3"
                 type="button"
                 class="btn"
-                style="background-color: #2b82e6; color: #04233a; font-family: Verdana, Geneva, Tahoma, sans-serif;"
+                style="
+                  background-color: #2b82e6;
+                  color: #04233a;
+                  font-family: Verdana, Geneva, Tahoma, sans-serif;
+                "
                 onmousedown="buzzerOn()"
                 onmouseup="buzzerOff()"
                 onmouseleave="buzzerOff()"
@@ -271,11 +290,15 @@
                 Sound 3
               </button>
 
-             <button
+              <button
                 id="buzzerBtn4"
                 type="button"
                 class="btn"
-                style="background-color: #66a9ff; color: #04233a; font-family: Verdana, Geneva, Tahoma, sans-serif;"
+                style="
+                  background-color: #66a9ff;
+                  color: #04233a;
+                  font-family: Verdana, Geneva, Tahoma, sans-serif;
+                "
                 onmousedown="buzzerOn()"
                 onmouseup="buzzerOff()"
                 onmouseleave="buzzerOff()"
@@ -287,22 +310,34 @@
             </div>
           </div>
         </div>
-        <h2 style="color: #002b7f; font-family: Verdana, Geneva, Tahoma, sans-serif;">ESP32-CAM Live Stream</h2>
-  <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Camera</h5>
-        <img id="camPreview" alt="Camera preview" style="width:100%;max-width:640px;" />
-      </div>
-    </div>
+        <div class="col-md-6">
+          <div
+            class="card p-3 mb-3"
+            style="background-color: rgba(225, 225, 225, 0.45); height: 85.5%"
+          >
+            <h5
+              class="sensor-title"
+              style="
+                color: #002b7f;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                font-weight: bold;
+              "
+            >
+              ESP32-CAM Live Stream
+            </h5>
+            <div class="card-body">
+              <h5 class="card-title">Camera</h5>
+              <img
+                id="camPreview"
+                alt="Camera preview"
+                style="width: 100%; max-width: 640px"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- ...existing code... -->
-  
-    <!-- ...existing code... -->
-
-    <!-- example input firebase-->
-  
 
     <!-- cloud background -->
     <div id="background-wrap">
