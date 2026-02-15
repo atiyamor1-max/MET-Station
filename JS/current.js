@@ -222,7 +222,7 @@ DIREF.on('value', (snapshot) => {
 
 
 
-// mapping: enable button -> 0, buzzerBtn1..4 -> 4..7
+// mapping: enable button -> 0, buzzerBtn1..4 -> 1..4
 const BUZZER_MAP = {
   ENABLEBTN: 0,
   buzzerBtn1: 1,
@@ -231,72 +231,83 @@ const BUZZER_MAP = {
   buzzerBtn4: 4
 };
 
-// keep the button UI in sync with /toAltera numeric value (preserve original labels)
-db.ref("/toAltera").on('value', (snap) => {
-  const val = Number(snap.val()) || 0;
+// Track last value set from UI (prevents unwanted auto-reset)
+let lastUserBuzzerValue = 0;
+let allowZeroFromUI = false;
 
-  // update single generic button (if present) but keep its original label
-  const singleBtn = document.getElementById('buzzerBtn');
-  if (singleBtn) {
-    if (!singleBtn.dataset.originalText) singleBtn.dataset.originalText = singleBtn.innerText;
-    singleBtn.dataset.buzzer = String(val);
-    singleBtn.classList.toggle('active', val !== 0);
-    singleBtn.innerText = (val !== 0) ? `${singleBtn.dataset.originalText} — Active (${val})` : singleBtn.dataset.originalText;
+// Keep UI in sync with Firebase BUT ignore unwanted auto-zero
+db.ref("/toAltera").on('value', (snap) => {
+  const raw = snap.val();
+  if (raw === null) return;
+
+  const val = Number(raw);
+  if (Number.isNaN(val)) return;
+
+  // Ignore automatic zero unless explicitly allowed
+  if (val === 0 && !allowZeroFromUI) {
+    return;
   }
 
-  // update mapped buttons: only toggle active state, keep labels
+  lastUserBuzzerValue = val;
+
   Object.keys(BUZZER_MAP).forEach(id => {
     const btn = document.getElementById(id);
     if (!btn) return;
+
     const btnVal = BUZZER_MAP[id];
-    if (!btn.dataset.originalText) btn.dataset.originalText = btn.innerText;
-    btn.dataset.buzzer = String(val);
+
     btn.classList.toggle('active', val === btnVal);
     btn.setAttribute('aria-pressed', val === btnVal ? 'true' : 'false');
   });
 });
 
-// attach events to multiple buzzer buttons;
-// changed: buttons 1..4 now only set their mapped value on click and do NOT auto-reset.
-// ENABLEBTN (mapped to 0) sets 0 when clicked — only ENABLEBTN resets the buzzer.
+// Attach click events
 function attachBuzzerButtons(ids = []) {
-  ids.forEach((id, idx) => {
+  ids.forEach(id => {
     const btn = document.getElementById(id);
-    if (!btn) {
-      console.warn(`buzzer button not found: #${id}`);
-      return;
-    }
-    if (btn.dataset.buzzerAttached === '1') return; // already attached
-    btn.dataset.buzzerAttached = '1';
+    if (!btn) return;
 
-    // determine mapped value: prefer BUZZER_MAP, then data-buzzerval; if none -> skip
-    const mapped = (BUZZER_MAP.hasOwnProperty(id) ? BUZZER_MAP[id] : null);
-    const dataAttr = (typeof btn.dataset.buzzerval !== 'undefined') ? Number(btn.dataset.buzzerval) : null;
-    const mappedVal = (mapped !== null) ? mapped : (Number.isFinite(dataAttr) ? dataAttr : null);
+    const mappedVal = BUZZER_MAP[id];
+    if (mappedVal === undefined) return;
 
-    if (mappedVal === null) {
-      console.warn(`No buzzer value for #${id} (add to BUZZER_MAP or set data-buzzerval). Skipping attachment.`);
-      return;
-    }
-
-    btn.dataset.buzzerval = String(mappedVal);
-
-    // store original label so listener won't overwrite it later
-    if (!btn.dataset.originalText) btn.dataset.originalText = btn.innerText;
-
-    // NEW: click sets the mapped value (for ENABLEBTN mappedVal === 0 => resets)
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+
       if (mappedVal === 0) {
-        // enable button: explicitly write 0 (reset)
-        buzzerOn(0);
+        // ENABLE button resets intentionally
+        allowZeroFromUI = true;
+        buzzerOn(0).then(() => {
+          lastUserBuzzerValue = 0;
+          allowZeroFromUI = false;
+        });
         return;
       }
-      // set this button's value and keep it until ENABLEBTN is pressed
-      buzzerOn(mappedVal);
+
+      // Regular buzzer buttons (1–4)
+      buzzerOn(mappedVal).then(() => {
+        lastUserBuzzerValue = mappedVal;
+      });
     });
   });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  attachBuzzerButtons(['ENABLEBTN','buzzerBtn1','buzzerBtn2','buzzerBtn3','buzzerBtn4']);
+});
+
+// Simple buzzer function (unchanged behavior)
+function buzzerOn(val) {
+  const v = Number(val);
+  if (Number.isNaN(v)) return Promise.resolve(0);
+
+  return db.ref("/toAltera").set(v)
+    .then(() => v)
+    .catch(err => {
+      console.error('buzzerOn error', err);
+      return 0;
+    });
+}
+
 
 // ensure it's attached after DOM ready
 document.addEventListener('DOMContentLoaded', () => {
