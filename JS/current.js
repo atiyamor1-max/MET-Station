@@ -220,15 +220,7 @@ DIREF.on('value', (snapshot) => {
 
 
 
-// turn buzzer off (0)
-function buzzerOff() {
-  return db.ref("/toAltera").set(0)
-    .then(() => 0)
-    .catch(err => {
-      console.error('buzzerOff error', err);
-      return 0;
-    });
-}
+
 
 // mapping: enable button -> 0, buzzerBtn1..4 -> 4..7
 const BUZZER_MAP = {
