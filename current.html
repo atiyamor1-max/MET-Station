@@ -53,111 +53,123 @@
     </div>
 
     <!-- SENSOR DISPLAY CARDS -->
-   <div class="container mt-5 pt-5" style="padding-bottom: 20px;" >
-  <div class="row justify-content-center text-center g-4">
-
-    <!-- TOP ROW: Wind Direction + Wind Speed -->
-<div class="col-12 col-md-6">
-  <div class="widget-card w-100">
-        <h3>Wind Direction</h3>
-        <div class="compass">
-          <div class="compass-ring"></div>
-          <div class="compass-arrow" id="compassArrow"></div>
-          <div class="compass-center"></div>
-        </div>
-        <p id="directionLabel">0° (N)</p>
-      </div>
-    </div>
-
-<div class="col-12 col-md-6">
-  <div class="widget-card w-100">
-        <h3>Wind Speed</h3>
-        <div class="anemometer">
-          <div class="rotor" id="rotor">
-            <div class="blade blade1"></div>
-            <div class="blade blade2"></div>
-            <div class="blade blade3"></div>
+    <div class="container mt-5 pt-5" style="padding-bottom: 20px">
+      <div class="row justify-content-center text-center g-4">
+        <!-- TOP ROW: Wind Direction + Wind Speed -->
+        <div class="col-12 col-md-6">
+          <div class="widget-card w-100 h-100">
+            <h3>Wind Direction</h3>
+            <div class="compass">
+              <div class="compass-ring"></div>
+              <div class="compass-arrow" id="compassArrow"></div>
+              <div class="compass-center"></div>
+            </div>
+            <p id="directionLabel">0° (N)</p>
           </div>
         </div>
-        <p id="speedLabel">0 km/h</p>
-      </div>
-    </div>
 
-    <!-- MIDDLE ROW: Sun / Humidity / Temperature -->
-<div class="col-12 col-md-4">
-  <div class="widget-card w-100">
-        <h3>Light Level</h3>
-        <div class="sun" id="sun"></div>
-        <p id="luxLabel">0 Lux</p>
-      </div>
-    </div>
-
-<div class="col-12 col-md-4">
-  <div class="widget-card w-100">
-        <h3>Humidity</h3>
-        <div class="drop">
-          <div class="drop-fill" id="dropFill"></div>
+        <div class="col-12 col-md-6">
+          <div class="widget-card w-100 h-100">
+            <h3>Wind Speed</h3>
+            <div class="anemometer">
+              <div class="rotor" id="rotor">
+                <div class="blade blade1"></div>
+                <div class="blade blade2"></div>
+                <div class="blade blade3"></div>
+              </div>
+            </div>
+            <p id="speedLabel">0 km/h</p>
+          </div>
         </div>
-        <p id="humLabel">0%</p>
-      </div>
-    </div>
 
-<div class="col-12 col-md-4">
-  <div class="widget-card w-100">
-        <h3>Temperature</h3>
-        <div class="thermometer">
-          <div class="thermo-fill" id="thermoFill"></div>
-          <div class="thermo-bulb"></div>
+        <!-- MIDDLE ROW: Sun / Humidity / Temperature -->
+        <div class="col-12 col-md-4">
+          <div class="widget-card w-100 h-100">
+            <h3>Light Level</h3>
+            <div class="sun" id="sun"></div>
+            <p id="luxLabel">0 Lux</p>
+          </div>
         </div>
-        <p id="tempLabel">0°C</p>
-      </div>
-    </div>
 
-    <!-- BOTTOM ROW: Temp Ref + Buzzer -->
-<div class="col-12 col-md-6" style="padding-bottom: 20px;">
-  <div class="card p-4 w-100 text-center"
-           style="background-color: rgba(225,225,225,0.12);">
-        <label class="form-label fw-bold"
-               style="color:#002b7f; font-size: larger;">
-          Set Reference Temperature:
-        </label>
+        <div class="col-12 col-md-4">
+          <div class="widget-card w-100 h-100">
+            <h3>Humidity</h3>
+            <div class="drop">
+              <div class="drop-fill" id="dropFill"></div>
+            </div>
+            <p id="humLabel">0%</p>
+          </div>
+        </div>
 
-        <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
-          <input id="tempinput"
-                 type="text"
-                 class="form-control text-center"
-                 style="max-width:120px;">
-          <button class="btn"
-                  style="background-color:#002b7f;color:white;"
-                  onclick="setTempRef()">
-            Set Ref
-          </button>
+        <div class="col-12 col-md-4">
+          <div class="widget-card w-100 h-100">
+            <h3>Temperature</h3>
+            <div class="thermometer">
+              <div class="thermo-fill" id="thermoFill"></div>
+              <div class="thermo-bulb"></div>
+            </div>
+            <p id="tempLabel">0°C</p>
+          </div>
+        </div>
+
+        <!-- BOTTOM ROW: Temp Ref + Buzzer -->
+        <div class="col-12 col-md-6" style="padding-bottom: 20px">
+          <div
+            class="card p-4 w-100 h-100 text-center"
+            style="background-color: rgba(225, 225, 225, 0.12)"
+          >
+            <label
+              class="form-label fw-bold"
+              style="color: #002b7f; font-size: larger"
+            >
+              Set Reference Temperature:
+            </label>
+
+            <div
+              class="d-flex justify-content-center align-items-center gap-2 mt-3"
+            >
+              <input
+                id="tempinput"
+                type="text"
+                class="form-control text-center"
+                style="max-width: 120px"
+              />
+              <button
+                class="btn"
+                style="background-color: #002b7f; color: white"
+                onclick="setTempRef()"
+              >
+                Set Ref
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6" style="padding-bottom: 20px">
+          <div
+            class="card p-4 w-100 h-100 text-center"
+            style="background-color: rgba(225, 225, 225, 0.12)"
+          >
+            <label
+              class="form-label fw-bold"
+              style="color: #002b7f; font-size: larger"
+            >
+              Buzzer Control
+            </label>
+
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+              <button id="ENABLEBTN" class="btn btn-dark">Enable</button>
+              <button id="buzzerBtn1" class="btn btn-primary">Sound 1</button>
+              <button id="buzzerBtn2" class="btn btn-info text-white">
+                Sound 2
+              </button>
+              <button id="buzzerBtn3" class="btn btn-warning">Sound 3</button>
+              <button id="buzzerBtn4" class="btn btn-secondary">Sound 4</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-<div class="col-12 col-md-6" style="padding-bottom: 20px;">
-  <div class="card p-4 w-100 text-center"
-           style="background-color: rgba(225,225,225,0.12);">
-        <label class="form-label fw-bold"
-               style="color:#002b7f; font-size: larger;">
-          Buzzer Control
-        </label>
-
-        <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
-          <button id="ENABLEBTN" class="btn btn-dark">Enable</button>
-          <button id="buzzerBtn1" class="btn btn-primary">Sound 1</button>
-          <button id="buzzerBtn2" class="btn btn-info text-white">Sound 2</button>
-          <button id="buzzerBtn3" class="btn btn-warning">Sound 3</button>
-          <button id="buzzerBtn4" class="btn btn-secondary">Sound 4</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
 
     <!-- cloud background -->
     <div id="background-wrap">
