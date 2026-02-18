@@ -185,3 +185,15 @@
   box-shadow: 0 0 20px rgba(255, 193, 7, 0.6);
   transition: box-shadow 0.8s ease, transform 0.8s ease;
 }
+
+.widget-card {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 15px;
+  padding: 20px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
