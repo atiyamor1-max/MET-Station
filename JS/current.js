@@ -24,21 +24,6 @@ db.ref(REF_TEMP_PATH).on('value', (snap) => {
 });
 
 
-// Additional TEMP listener that updates only the icon according to tempRefValue.
-// This does not remove or change your existing TEMPREF.on listener.
-db.ref("/TEMP").on('value', (snapshot) => {
-
-  const data = snapshot.val();
-  const tempNum = Number(data);
-  if (isNaN(tempNum)) return; // nothing to do for non-numeric values
-
-  const imgHtml = (tempNum > tempRefValue)
-    ? '<i class="bi bi-thermometer-sun" style="font-size: 3rem"></i>'
-    : '<i class="bi bi-thermometer-snow" style="font-size: 3rem"></i>';
-
-  const el = document.getElementById("tempimg");
-  if (el) el.innerHTML = imgHtml;
-});
 
 function setTempRef() {
   const input = document.getElementById("tempinput");
@@ -67,14 +52,6 @@ function setTempRef() {
     .catch(e => console.error('setTempRef error', e));
 }
 
-// function to set reference temperature from input field
-  //ALWAYS WORKS- PRINTING DATA FROM SENSOR
-
-//Temperature SENSOR
-db.ref(REF_TEMP_PATH).on('value', (snap) => {
-  const v = snap.val();
-  tempRefValue = (v === null) ? 0 : Number(v);
-});
 
 // --- ADDED: single function that updates the temp icon based on numeric value ---
 function updateTempIcon(tempNum) {
@@ -86,29 +63,15 @@ function updateTempIcon(tempNum) {
     : '<i class="bi bi-thermometer-snow" style="font-size: 3rem"></i>';
 }
 
-
-//  TEMP listener that updates only the icon according to tempRefValue.
-// This now calls the new updateTempIcon function.
-db.ref("/TEMP").on('value', (snapshot) => {
-  const data = snapshot.val();
-  const tempNum = Number(data);
-  if (isNaN(tempNum)) return; // nothing to do for non-numeric values
-
-  updateTempIcon(tempNum);
-});
-
-
-// ADD: define TEMPREF and update the numeric display + icon
+//TEMP LISTENER: read TEMP value, update thermometer and icon
 var TEMPREF = db.ref("/TEMP");
-TEMPREF.on('value', (snapshot) => {
-  const data = snapshot.val();
-  const tempNum = Number(data);
-  const display = isNaN(tempNum) ? data : tempNum;
-  const el = document.getElementById("tempValue");
-  if (el) el.innerText = "The Temperature is: " + display + " °C";
 
-  // call the existing function that sets the icon
-  if (!isNaN(tempNum)) updateTempIcon(tempNum);
+TEMPREF.on('value', (snapshot) => {
+  const tempNum = Number(snapshot.val());
+  if (isNaN(tempNum)) return;
+
+  updateThermometer(tempNum);  // animated thermometer
+  updateTempIcon(tempNum);     // compare with user reference
 });
 
 // Live update: when the stored reference changes, re-evaluate the current TEMP and update icon immediately
@@ -200,21 +163,32 @@ SPEEDREF.on('value', (snapshot) => {
 
 // WIND DIRECTION SENSOR 
 var DIREF = db.ref("/fromAltera/C");
-DIREF.on('value', (snapshot) => {
-  const data = snapshot.val();
-  const dir = (data === null) ? 'unknown' : String(data).trim().toLowerCase();
-  document.getElementById("dirValue").innerText = `The wind comes from: ${dir}`;
 
-  if (dir === 'north' || dir === 'n') {
-    document.getElementById("dirimg").innerHTML = '<i class="bi bi-arrow-up-circle-fill" style="font-size: 3rem"></i>';
-  } else if (dir === 'east' || dir === 'e') {
-    document.getElementById("dirimg").innerHTML = '<i class="bi bi-arrow-right-circle-fill" style="font-size: 3rem"></i>';
-  } else if (dir === 'south' || dir === 's') {
-    document.getElementById("dirimg").innerHTML = '<i class="bi bi-arrow-down-circle-fill" style="font-size: 3rem"></i>';
-  } else if (dir === 'west' || dir === 'w') {
-    document.getElementById("dirimg").innerHTML = '<i class="bi bi-arrow-left-circle-fill" style="font-size: 3rem"></i>';
-  } else {
-    document.getElementById("dirimg").innerHTML = ''; // or default icon
+DIREF.on('value', (snapshot) => {
+  const raw = snapshot.val();
+  if (!raw) return;
+
+  const dir = String(raw).trim().toLowerCase();
+
+  const directionMap = {
+    n: 0,
+    north: 0,
+    ne: 45,
+    e: 90,
+    east: 90,
+    se: 135,
+    s: 180,
+    south: 180,
+    sw: 225,
+    w: 270,
+    west: 270,
+    nw: 315
+  };
+
+  const degrees = directionMap[dir];
+
+  if (degrees !== undefined) {
+    updateCompass(degrees); // 🔥 SEND VALUE TO FUNCTION
   }
 });
 
@@ -295,24 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
   attachBuzzerButtons(['ENABLEBTN','buzzerBtn1','buzzerBtn2','buzzerBtn3','buzzerBtn4']);
 });
 
-// Simple buzzer function (unchanged behavior)
-function buzzerOn(val) {
-  const v = Number(val);
-  if (Number.isNaN(v)) return Promise.resolve(0);
 
-  return db.ref("/toAltera").set(v)
-    .then(() => v)
-    .catch(err => {
-      console.error('buzzerOn error', err);
-      return 0;
-    });
-}
-
-
-// ensure it's attached after DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-  attachBuzzerButtons(['ENABLEBTN','buzzerBtn1','buzzerBtn2','buzzerBtn3','buzzerBtn4']);
-});
 
 // history page listeners
 
@@ -378,6 +335,28 @@ function getCardinalDirection(deg) {
   const directions = ["N","NE","E","SE","S","SW","W","NW"];
   return directions[Math.round(deg / 45) % 8];
 }
+// thermometer
+function updateThermometer(tempValue) {
+  const minTemp = -10;
+  const maxTemp = 50;
+
+  const percent =
+    ((tempValue - minTemp) / (maxTemp - minTemp)) * 100;
+
+  const clamped = Math.max(0, Math.min(100, percent));
+
+  const fill = document.getElementById("thermoFill");
+  const label = document.getElementById("tempLabel");
+  const valueText = document.getElementById("tempValue");
+
+  if (fill) fill.style.height = clamped + "%";
+  if (label) label.innerText = tempValue + "°C";
+  if (valueText)
+    valueText.innerText =
+      "The Temperature is: " + tempValue + " °C";
+}
+
+
 
 // simple cam preview listener: set <img id="camPreview"> src to http://{camIp}:81/
 db.ref("/camIp").once('value', (snap) => {
