@@ -116,50 +116,25 @@ function checkTempRefSimple() {
 // HUMIDITY SENSOR 
 var HUMTREF = db.ref("/HUMIDITY");
 HUMTREF.on('value', (snapshot) => {
-  const data = snapshot.val();
-  document.getElementById("humValue").innerText = `The Humidity level is: ${data} %`;
-
-  if (Number(data) > 60) {
-    document.getElementById("humimg").innerHTML = '<i class="bi bi-droplet-fill" style="font-size: 3rem"></i>';
-  } else if (Number(data) >= 40 && Number(data) <= 60) {
-    document.getElementById("humimg").innerHTML = '<i class="bi bi-droplet-half" style="font-size: 3rem"></i>';
-  } else {
-    document.getElementById("humimg").innerHTML = '<i class="bi bi-droplet" style="font-size: 3rem"></i>';
-  }
+  const hum = Number(snapshot.val());
+  if (!isNaN(hum)) updateHumidity(hum);
 });
 
 // LIGHT SENSOR 
 var LDRREF = db.ref("/fromAltera/A");
 LDRREF.on('value', (snapshot) => {
-  const data = snapshot.val();
-  console.log('/fromAltera/A value:', data);
-  document.getElementById("ldrValue").innerText = `The light level is: ${data} Lux`;
-
-  if (Number(data) > 60) {
-    document.getElementById("ldrimg").innerHTML = '<i class="bi bi-brightness-high-fill" style="font-size: 3rem"></i>';
-  } else if (Number(data) >= 40 && Number(data) <= 60) {
-    document.getElementById("ldrimg").innerHTML = '<i class="bi bi-brightness-high" style="font-size: 3rem"></i>';
-  } else {
-    document.getElementById("ldrimg").innerHTML = '<i class="bi bi-cloud-sun-fill" style="font-size: 3rem"></i>';
-  }
+  const lux = Number(snapshot.val());
+  if (!isNaN(lux)) updateLightLevel(lux);
 });
+
 
 // WIND SPEED SENSOR 
 var SPEEDREF = db.ref("/fromAltera/B");
 SPEEDREF.on('value', (snapshot) => {
-  const data = snapshot.val();
-  const speedNum = Number(data);
-  const display = isNaN(speedNum) ? data : speedNum;
-  document.getElementById("speedValue").innerText = `The wind speed is: ${display} km/h`;
-
-  if (speedNum > 60) {
-    document.getElementById("speedimg").innerHTML = '<i class="bi bi-cloud-fog2-fill" style="font-size: 3rem"></i>';
-  } else if (speedNum >= 40 && speedNum <= 60) {
-    document.getElementById("speedimg").innerHTML = '<i class="bi bi-cloud-fog2-fill" style="font-size: 3rem"></i>';
-  } else {
-    document.getElementById("speedimg").innerHTML = '<i class="bi bi-cloud-minus" style="font-size: 3rem"></i>';
-  }
+  const speed = Number(snapshot.val());
+  if (!isNaN(speed)) updateWindSpeed(speed);
 });
+
 
 // WIND DIRECTION SENSOR 
 var DIREF = db.ref("/fromAltera/C");
@@ -191,9 +166,6 @@ DIREF.on('value', (snapshot) => {
     updateCompass(degrees); // 🔥 SEND VALUE TO FUNCTION
   }
 });
-
-
-
 
 
 // mapping: enable button -> 0, buzzerBtn1..4 -> 1..4
@@ -354,6 +326,53 @@ function updateThermometer(tempValue) {
   if (valueText)
     valueText.innerText =
       "The Temperature is: " + tempValue + " °C";
+}
+
+//water drop
+function updateHumidity(humidity) {
+  const percent = Math.max(0, Math.min(100, humidity));
+
+  const fill = document.getElementById("dropFill");
+  const label = document.getElementById("humLabel");
+
+  if (fill) fill.style.height = percent + "%";
+  if (label) label.innerText = percent + "%";
+}
+
+//anemometer
+
+function updateWindSpeed(speed) {
+  const rotor = document.getElementById("rotor");
+  const label = document.getElementById("speedLabel");
+
+  if (!rotor) return;
+
+  // Higher speed = faster rotation
+  const duration = Math.max(0.2, 5 / Math.max(1, speed));
+
+  rotor.style.animationDuration = duration + "s";
+
+  if (label) label.innerText = speed + " km/h";
+}
+
+  //sun
+function updateLightLevel(lux) {
+  const sun = document.getElementById("sun");
+  const label = document.getElementById("luxLabel");
+
+  if (!sun) return;
+
+  const intensity = Math.min(100, lux);
+
+  const glowSize = 20 + intensity * 0.8;
+
+  sun.style.boxShadow =
+    `0 0 ${glowSize}px rgba(255,193,7,${0.5 + intensity/200})`;
+
+  sun.style.transform =
+    `scale(${1 + intensity / 300})`;
+
+  if (label) label.innerText = lux + " Lux";
 }
 
 

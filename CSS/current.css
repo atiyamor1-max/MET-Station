@@ -120,3 +120,68 @@
   border-radius: 50%;
   border: 4px solid rgba(255,255,255,0.7);
 }
+
+/* WATER DROP */
+.drop {
+  position: relative;
+  width: 120px;
+  height: 160px;
+  margin: 20px auto;
+  background: rgba(255,255,255,0.15);
+  clip-path: path("M60 0 C20 50, 0 80, 0 110 a60 60 0 0 0 120 0 C120 80, 100 50, 60 0 Z");
+  overflow: hidden;
+  border: 3px solid rgba(255,255,255,0.6);
+}
+
+.drop-fill {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(to top, #00b0ff, #40c4ff);
+  transition: height 1s ease-in-out;
+}
+
+.anemometer {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 20px auto;
+}
+
+.rotor {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  animation: spin 2s linear infinite;
+}
+
+.blade {
+  position: absolute;
+  width: 20px;
+  height: 60px;
+  background: white;
+  left: 50%;
+  top: 50%;
+  transform-origin: center bottom;
+  border-radius: 10px;
+}
+
+.blade1 { transform: translate(-50%, -100%) rotate(0deg); }
+.blade2 { transform: translate(-50%, -100%) rotate(120deg); }
+.blade3 { transform: translate(-50%, -100%) rotate(240deg); }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sun {
+  width: 100px;
+  height: 100px;
+  margin: 30px auto;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffeb3b 40%, #ffc107);
+  box-shadow: 0 0 20px rgba(255, 193, 7, 0.6);
+  transition: box-shadow 0.8s ease, transform 0.8s ease;
+}

@@ -55,103 +55,6 @@
     <!-- SENSOR DISPLAY CARDS -->
     <div class="container mt-5 pt-5">
       <div class="row" style="padding-bottom: 60px">
-        <!-- humidity -->
-        <div class="col-md-6">
-          <div
-            class="card p-3 mb-3"
-            style="background-color: rgba(225, 225, 225, 0.45)"
-          >
-            <h5
-              class="sensor-title"
-              style="
-                color: #002b7f;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-                font-size: large;
-                font-weight: bold;
-              "
-            >
-              Humidity <span id="humimg"></span>
-            </h5>
-            <p id="humValue" class="sensor-value" style="color: black"></p>
-          </div>
-        </div>
-
-        <!-- ldr -->
-        <div class="col-md-6">
-          <div
-            class="card p-3 mb-3"
-            style="background-color: rgba(225, 225, 225, 0.45)"
-          >
-            <h5
-              class="sensor-title"
-              style="
-                color: #002b7f;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-              "
-            >
-              Light Level <span id="ldrimg"></span>
-            </h5>
-
-            <p id="ldrValue" class="sensor-value" style="color: black"></p>
-          </div>
-        </div>
-
-        <!-- wind speed -->
-        <div class="col-md-6">
-          <div
-            class="card p-3 mb-3"
-            style="background-color: rgba(225, 225, 225, 0.45)"
-          >
-            <h5
-              class="sensor-title"
-              style="
-                color: #002b7f;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-              "
-            >
-              Wind Speed <span id="speedimg"></span>
-            </h5>
-            <p id="speedValue" class="sensor-value" style="color: black">--</p>
-          </div>
-        </div>
-
-        <!-- wind direction -->
-        <div class="col-md-6">
-          <div
-            class="card p-3 mb-3"
-            style="background-color: rgba(225, 225, 225, 0.45)"
-          >
-            <h5
-              class="sensor-title"
-              style="
-                color: #002b7f;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-              "
-            >
-              Wind Direction <span id="dirimg"></span>
-            </h5>
-
-            <p id="dirValue" class="sensor-value" style="color: black"></p>
-          </div>
-        </div>
-        <!-- temperature -->
-        <div class="col-md-6">
-          <div
-            class="card p-3 mb-3"
-            style="background-color: rgba(225, 225, 225, 0.45)"
-          >
-            <h5
-              class="sensor-title"
-              style="
-                color: #002b7f;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
-              "
-            >
-              Temperature <span id="tempimg"></span>
-            </h5>
-            <p id="tempValue" class="sensor-value" style="color: black"></p>
-          </div>
-        </div>
         <!--  temp input  -->
         <div class="col-md-6">
           <div
@@ -347,19 +250,56 @@
       <p id="directionLabel">0° (N)</p>
     </div>
 
+    <!-- anemometer -->
+
+    <div class="widget-card">
+      <h3>Wind Speed</h3>
+
+      <div class="anemometer">
+        <div class="rotor" id="rotor">
+          <div class="blade blade1"></div>
+          <div class="blade blade2"></div>
+          <div class="blade blade3"></div>
+        </div>
+      </div>
+
+      <p id="speedLabel">0 km/h</p>
+    </div>
+
     <!-- thermometer -->
 
     <div class="widget-card">
-  <h3>Temperature</h3>
+      <h3>Temperature</h3>
 
-  <div class="thermometer">
-    <div class="thermo-fill" id="thermoFill"></div>
-    <div class="thermo-bulb"></div>
-  </div>
+      <div class="thermometer">
+        <div class="thermo-fill" id="thermoFill"></div>
+        <div class="thermo-bulb"></div>
+      </div>
 
-  <p id="tempLabel">0°C</p>
-</div>
+      <p id="tempLabel">0°C</p>
+    </div>
 
+    <!--waterdrop' -->
+
+    <div class="widget-card">
+      <h3>Humidity</h3>
+
+      <div class="drop">
+        <div class="drop-fill" id="dropFill"></div>
+      </div>
+
+      <p id="humLabel">0%</p>
+    </div>
+    
+    <!--sun' -->
+
+    <div class="widget-card">
+      <h3>Light Level</h3>
+
+      <div class="sun" id="sun"></div>
+
+      <p id="luxLabel">0 Lux</p>
+    </div>
 
     <!-- cloud background -->
     <div id="background-wrap">
