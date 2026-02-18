@@ -166,10 +166,10 @@ HUMTREF.on('value', (snapshot) => {
 });
 
 // LIGHT SENSOR 
-var LDRREF = db.ref("/A");
+var LDRREF = db.ref("/fromAltera/A");
 LDRREF.on('value', (snapshot) => {
   const data = snapshot.val();
-  console.log('/A value:', data);
+  console.log('/fromAltera/A value:', data);
   document.getElementById("ldrValue").innerText = `The light level is: ${data} Lux`;
 
   if (Number(data) > 60) {
@@ -182,7 +182,7 @@ LDRREF.on('value', (snapshot) => {
 });
 
 // WIND SPEED SENSOR 
-var SPEEDREF = db.ref("/B");
+var SPEEDREF = db.ref("/fromAltera/B");
 SPEEDREF.on('value', (snapshot) => {
   const data = snapshot.val();
   const speedNum = Number(data);
@@ -199,7 +199,7 @@ SPEEDREF.on('value', (snapshot) => {
 });
 
 // WIND DIRECTION SENSOR 
-var DIREF = db.ref("/C");
+var DIREF = db.ref("/fromAltera/C");
 DIREF.on('value', (snapshot) => {
   const data = snapshot.val();
   const dir = (data === null) ? 'unknown' : String(data).trim().toLowerCase();
@@ -364,6 +364,21 @@ function buzzerOn(val) {
       return 0;
     });
 }
+
+// compass
+function updateCompass(degrees) {
+  const arrow = document.getElementById("compassArrow");
+  arrow.style.transform = `translate(-50%, -100%) rotate(${degrees}deg)`;
+
+  document.getElementById("directionLabel").innerText =
+    `${degrees}° (${getCardinalDirection(degrees)})`;
+}
+
+function getCardinalDirection(deg) {
+  const directions = ["N","NE","E","SE","S","SW","W","NW"];
+  return directions[Math.round(deg / 45) % 8];
+}
+
 // simple cam preview listener: set <img id="camPreview"> src to http://{camIp}:81/
 db.ref("/camIp").once('value', (snap) => {
   const ip = snap.val();
