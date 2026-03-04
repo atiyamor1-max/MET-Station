@@ -60,7 +60,11 @@ var TEMPREF = db.ref("/TEMP");
 
 TEMPREF.on('value', (snapshot) => {
   const tempNum = Number(snapshot.val());
-  if (isNaN(tempNum)) return;
+  console.log('TEMP listener #1 fired, value:', snapshot.val(), 'as number:', tempNum);
+  if (isNaN(tempNum)) {
+    console.warn('TEMP is NaN');
+    return;
+  }
 
   updateThermometer(tempNum);  // animated thermometer
 });
@@ -83,9 +87,14 @@ db.ref(REF_TEMP_PATH).on('value', (snap) => {
 // When TEMP changes, check against reference and update toAltera
 TEMPREF.on('value', (snapshot) => {
   const tempNum = Number(snapshot.val());
-  if (isNaN(tempNum)) return;
+  console.log('TEMP listener #2 fired, value:', snapshot.val(), 'as number:', tempNum);
+  if (isNaN(tempNum)) {
+    console.warn('TEMP is NaN in listener #2');
+    return;
+  }
 
   updateThermometer(tempNum);
+  console.log('Calling checkTempRefSimple...');
   checkTempRefSimple();
 });
 
