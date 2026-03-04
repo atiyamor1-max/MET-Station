@@ -127,7 +127,11 @@ function checkTempRefSimple() {
     // if TEMP_REF > TEMP -> write 64, else write 65
     const result = (ref > t) ? 64 : 65;
     console.log('checkTempRefSimple: TEMP=', t, 'TEMP_REF=', ref, '-> writing', result);
-    return db.ref('/toAltera').set(result).then(() => result);
+    return db.ref('/toAltera').set(result)
+      .then(() => {
+        console.log('checkTempRefSimple write succeeded:', result);
+        return result;
+      });
   })
   .catch(err => {
     console.error('checkTempRefSimple error', err);
@@ -206,6 +210,7 @@ let allowZeroFromUI = false;
 // Keep UI in sync with Firebase BUT ignore unwanted auto-zero
 db.ref("/toAltera").on('value', (snap) => {
   const raw = snap.val();
+  console.log('toAltera listener fired, raw:', raw);
   if (raw === null) return;
 
   const val = Number(raw);
