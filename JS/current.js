@@ -47,21 +47,13 @@ function setTempRef() {
     .then((tempSnap) => {
       if (!tempSnap) return;
       const tempNum = Number(tempSnap.val());
-      if (!isNaN(tempNum)) updateTempIcon(tempNum);
+      if (!isNaN(tempNum)) checkTempRefSimple();
     })
     .catch(e => console.error('setTempRef error', e));
 }
 
 
-// --- ADDED: single function that updates the temp icon based on numeric value ---
-function updateTempIcon(tempNum) {
-  if (isNaN(tempNum)) return;
-  const el = document.getElementById("tempimg");
-  if (!el) return;
-  el.innerHTML = (tempNum > tempRefValue)
-    ? '<i class="bi bi-thermometer-sun" style="font-size: 3rem"></i>'
-    : '<i class="bi bi-thermometer-snow" style="font-size: 3rem"></i>';
-}
+
 
 //TEMP LISTENER: read TEMP value, update thermometer and icon
 var TEMPREF = db.ref("/TEMP");
@@ -71,7 +63,6 @@ TEMPREF.on('value', (snapshot) => {
   if (isNaN(tempNum)) return;
 
   updateThermometer(tempNum);  // animated thermometer
-  updateTempIcon(tempNum);     // compare with user reference
 });
 
 // Live update: when the stored reference changes, re-evaluate the current TEMP and update icon immediately
@@ -79,19 +70,40 @@ db.ref(REF_TEMP_PATH).on('value', (snap) => {
   const v = snap.val();
   tempRefValue = (v === null) ? 0 : Number(v);
 
-  // read current TEMP once and update icon right away
+  // read current TEMP once and check temperature reference
   db.ref("/TEMP").once('value')
     .then(tempSnap => {
       const tempNum = Number(tempSnap.val());
-      if (!isNaN(tempNum)) updateTempIcon(tempNum);
+      if (!isNaN(tempNum)) checkTempRefSimple();
     })
     .catch(err => console.error('Failed to refresh temp icon after REF change', err));
 });
 
 
+// When TEMP changes, check against reference and update toAltera
+TEMPREF.on('value', (snapshot) => {
+  const tempNum = Number(snapshot.val());
+  if (isNaN(tempNum)) return;
+
+  updateThermometer(tempNum);
+  checkTempRefSimple();
+});
+
+// When TEMP_REF changes, re-check and update toAltera
+db.ref(REF_TEMP_PATH).on('value', (snap) => {
+  const v = snap.val();
+  tempRefValue = (v === null) ? 0 : Number(v);
+
+  db.ref("/TEMP").once('value')
+    .then(tempSnap => {
+      const tempNum = Number(tempSnap.val());
+      if (!isNaN(tempNum)) checkTempRefSimple();
+    })
+    .catch(err => console.error('Failed to refresh temp icon after REF change', err));
+});
+
+// Compare TEMP vs TEMP_REF and send 64 or 65 to /toAltera
 function checkTempRefSimple() {
-  // Read the measured TEMP and the stored TEMP_REF, compute 1 if TEMP > TEMP_REF else 0,
-  // write that numeric result to /toAltera and return the written value.
   return Promise.all([
     db.ref('/TEMP').once('value'),
     db.ref(REF_TEMP_PATH).once('value')
@@ -103,8 +115,9 @@ function checkTempRefSimple() {
       console.warn('checkTempRefSimple: missing numeric TEMP or TEMP_REF', tempSnap.val(), refSnap.val());
       return null;
     }
-    // user requested: if TEMP_REF > TEMP -> write 0, else write 1
+    // if TEMP_REF > TEMP -> write 64, else write 65
     const result = (ref > t) ? 64 : 65;
+    console.log('checkTempRefSimple: TEMP=', t, 'TEMP_REF=', ref, '-> writing', result);
     return db.ref('/toAltera').set(result).then(() => result);
   })
   .catch(err => {
