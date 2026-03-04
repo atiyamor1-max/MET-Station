@@ -11,6 +11,10 @@ const firebaseConfig = {
   
   const db=firebase.database();
 
+// path used for the temperature-vs-reference flag; keep it separate from the buzzer data
+const TEMP_FLAG_PATH = "/toAlteraTemp";  // new node for comparison results
+
+
   // temperature reference
 const REF_TEMP_PATH = "/TEMP_REF";
 let tempRefValue = 0;
@@ -111,7 +115,7 @@ db.ref(REF_TEMP_PATH).on('value', (snap) => {
     .catch(err => console.error('Failed to refresh temp icon after REF change', err));
 });
 
-// Compare TEMP vs TEMP_REF and send 64 or 65 to /toAltera
+// Compare TEMP vs TEMP_REF and send 64 or 65 to the dedicated temp-flag path
 function checkTempRefSimple() {
   return Promise.all([
     db.ref('/TEMP').once('value'),
@@ -127,7 +131,7 @@ function checkTempRefSimple() {
     // if TEMP_REF > TEMP -> write 64, else write 65
     const result = (ref > t) ? 64 : 65;
     console.log('checkTempRefSimple: TEMP=', t, 'TEMP_REF=', ref, '-> writing', result);
-    return db.ref('/toAltera').set(result)
+    return db.ref(TEMP_FLAG_PATH).set(result)
       .then(() => {
         console.log('checkTempRefSimple write succeeded:', result);
         return result;
