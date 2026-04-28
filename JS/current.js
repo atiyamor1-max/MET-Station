@@ -169,28 +169,11 @@ var DIREF = db.ref("/fromAltera/B");
 
 DIREF.on('value', (snapshot) => {
   const raw = snapshot.val();
-  if (!raw) return;
+  if (raw === null || raw === undefined) return;
 
-  const dir = String(raw).trim().toLowerCase();
+  const degrees = Number(raw);
 
-  const directionMap = {
-    n: 0,
-    north: 0,
-    ne: 45,
-    e: 90,
-    east: 90,
-    se: 135,
-    s: 180,
-    south: 180,
-    sw: 225,
-    w: 270,
-    west: 270,
-    nw: 315
-  };
-
-  const degrees = directionMap[dir];
-
-  if (degrees !== undefined) {
+  if (!isNaN(degrees)) {
     updateCompass(degrees); // 🔥 SEND VALUE TO FUNCTION
   }
 });
