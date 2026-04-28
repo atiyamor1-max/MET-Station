@@ -157,7 +157,7 @@ LDRREF.on('value', (snapshot) => {
 
 
 // WIND SPEED SENSOR 
-var SPEEDREF = db.ref("/fromAltera/B");
+var SPEEDREF = db.ref("/fromAltera/C");
 SPEEDREF.on('value', (snapshot) => {
   const speed = Number(snapshot.val());
   if (!isNaN(speed)) updateWindSpeed(speed);
@@ -165,7 +165,7 @@ SPEEDREF.on('value', (snapshot) => {
 
 
 // WIND DIRECTION SENSOR 
-var DIREF = db.ref("/fromAltera/C");
+var DIREF = db.ref("/fromAltera/B");
 
 DIREF.on('value', (snapshot) => {
   const raw = snapshot.val();
